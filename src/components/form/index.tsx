@@ -89,7 +89,16 @@ const RegisterForm = () => {
 				throw new Error(res.error);
 			} else if (res.id) {
 				toast.success('Team created successfully');
-				form.reset();
+				form.reset({
+					teamName: '',
+					teamLeader: {
+						name: '',
+						email: '',
+						phoneNumber: '',
+						isLeader: true,
+					},
+					teamMembers: [],
+				});
 			}
 		} catch (error) {
 			toast.error(String(error));
