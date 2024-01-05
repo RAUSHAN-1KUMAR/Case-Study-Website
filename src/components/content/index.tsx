@@ -20,6 +20,7 @@ const Content = () => {
 		<Carousel
 			opts={{
 				align: 'start',
+				loop: true,
 			}}
 			className='mx-auto flex min-h-screen max-w-screen-2xl flex-col justify-center gap-8 px-4'
 			id='content'
@@ -37,7 +38,7 @@ const Content = () => {
 			<CarouselContent>
 				{pages.map((page, index) => (
 					<CarouselItem key={index} className='w-full max-w-screen-2xl'>
-						<div className='w-full'>
+						<div className='w-full text-white'>
 							<WavesCard>
 								<MarkdownRenderer content={sections[page]!} />
 							</WavesCard>

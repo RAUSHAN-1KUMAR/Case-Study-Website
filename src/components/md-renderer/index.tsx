@@ -25,8 +25,24 @@ const MarkdownRenderer = ({ content }: Props) => {
 					);
 				},
 				li({ children }) {
+					// Check if the parent is an unordered list (ul)
+
 					return (
-						<p className='break-words py-2 text-xl text-neutral-200'>{children}</p>
+						<div className='flex w-full flex-row items-start gap-4 break-words py-2 text-sm text-neutral-200 md:text-xl'>
+							<div>
+								<div className='mt-2 h-3 w-3 rounded-full bg-neutral-200' />
+							</div>
+							{children}
+						</div>
+					);
+				},
+				h3({ children }) {
+					// Check if the parent is an unordered list (ul)
+
+					return (
+						<div className='my-2 mt-6 bg-gradient-to-b from-neutral-100 to-neutral-400 bg-clip-text text-xl font-bold text-transparent underline sm:text-2xl md:text-3xl'>
+							{children}
+						</div>
 					);
 				},
 			}}
