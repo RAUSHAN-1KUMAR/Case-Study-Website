@@ -1,8 +1,6 @@
 import React from 'react';
 import Spotlight from './Spotlight';
-
-// Icons
-import { FaArrowAltCircleDown } from 'react-icons/fa';
+import NextPageButton from './next-page';
 
 const Hero = () => {
 	return (
@@ -20,7 +18,7 @@ const Hero = () => {
 				</p>
 			</div>
 			<div className='absolute bottom-20 z-10 cursor-pointer'>
-				<FaArrowAltCircleDown className='animate-bounce text-4xl text-zinc-300' />
+				<NextPageButton />
 			</div>
 		</div>
 	);
