@@ -7,6 +7,7 @@ import {
 	useFieldArray,
 	type SubmitHandler,
 	type SubmitErrorHandler,
+	type FieldErrors,
 } from 'react-hook-form';
 import type * as z from 'zod';
 
@@ -24,9 +25,25 @@ import {
 
 import { TeamSchema } from '~/lib/zod';
 import { BsFillTrash3Fill } from 'react-icons/bs';
+import { AiOutlineLoading } from 'react-icons/ai';
+import { toast } from 'sonner';
+
+interface CreateTeamResponse {
+	id: string;
+	teamName: string;
+	createdAt: Date;
+	updatedAt: Date;
+}
+export type Team = z.infer<typeof TeamSchema>;
+
+export type FlattenObjects<T> = T extends object
+	? T extends infer O
+		? { [K in keyof O]: FlattenObjects<O[K]> }
+		: never
+	: T;
 
 const RegisterForm = () => {
-	const form = useForm<z.infer<typeof TeamSchema>>({
+	const form = useForm<Team>({
 		resolver: zodResolver(TeamSchema),
 		defaultValues: {
 			teamLeader: {
@@ -41,6 +58,12 @@ const RegisterForm = () => {
 	});
 
 	const onAddMember = () => {
+		if (fields.length >= 4) {
+			toast.error(
+				'A team can have maximum of 5 members including the team leader'
+			);
+			return;
+		}
 		append({
 			name: '',
 			email: '',
@@ -48,17 +71,54 @@ const RegisterForm = () => {
 		});
 	};
 
-	const onSubmit: SubmitHandler<z.infer<typeof TeamSchema>> = (
+	const onSubmit: SubmitHandler<Team> = async (
 		values: z.infer<typeof TeamSchema>
 	) => {
-		console.log(values);
+		try {
+			// console.log(values);
+			const res = await fetch('/api/create', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(values),
+			}).then(
+				async (res) => (await res.json()) as CreateTeamResponse | { error: string }
+			);
+			if ('error' in res) {
+				throw new Error(res.error);
+			} else if (res.id) {
+				toast.success('Team created successfully');
+				form.reset();
+			}
+		} catch (error) {
+			toast.error(String(error));
+		}
 	};
 
-	const onError: SubmitErrorHandler<z.infer<typeof TeamSchema>> = (
-		errors,
-		event
-	) => {
-		console.log(errors, event);
+	function collectErrors(obj: FieldErrors<Team>): string[] {
+		const errors: string[] = [];
+		const processObject = (nestedObj: FieldErrors<Team>) => {
+			for (const key in nestedObj) {
+				if (nestedObj.hasOwnProperty(key)) {
+					const value = nestedObj[key as keyof Team];
+					if (typeof value === 'object' && value !== null) {
+						processObject(value);
+					} else if (key === 'message' && typeof value === 'string') {
+						errors.push(value);
+					}
+				}
+			}
+		};
+		processObject(obj);
+		return errors;
+	}
+
+	const onError: SubmitErrorHandler<Team> = (errors) => {
+		const errorMessages = collectErrors(errors);
+		errorMessages.forEach((err) => {
+			toast.error(err);
+		});
 	};
 
 	return (
@@ -71,7 +131,11 @@ const RegisterForm = () => {
 						<FormItem>
 							<FormLabel className='text-white'>Team Name</FormLabel>
 							<FormControl>
-								<Input placeholder='Case Crackers' {...field} />
+								<Input
+									placeholder='Case Crackers'
+									{...field}
+									disabled={form.formState.isSubmitting}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -85,7 +149,11 @@ const RegisterForm = () => {
 						<FormItem>
 							<FormLabel className='text-white'>Name</FormLabel>
 							<FormControl>
-								<Input placeholder='John Doe' {...field} />
+								<Input
+									placeholder='John Doe'
+									{...field}
+									disabled={form.formState.isSubmitting}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -98,7 +166,11 @@ const RegisterForm = () => {
 						<FormItem>
 							<FormLabel className='text-white'>E-mail</FormLabel>
 							<FormControl>
-								<Input placeholder='john.doe@gmail.com' {...field} />
+								<Input
+									placeholder='john.doe@gmail.com'
+									{...field}
+									disabled={form.formState.isSubmitting}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -111,7 +183,11 @@ const RegisterForm = () => {
 						<FormItem>
 							<FormLabel className='text-white'>Phone</FormLabel>
 							<FormControl>
-								<Input placeholder='8973518316' {...field} />
+								<Input
+									placeholder='8973518316'
+									{...field}
+									disabled={form.formState.isSubmitting}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -127,6 +203,7 @@ const RegisterForm = () => {
 								onClick={() => remove(index)}
 								variant='ghost'
 								className='hover:bg-[#0A0A0A]'
+								disabled={form.formState.isSubmitting}
 							>
 								<BsFillTrash3Fill className='text-neutral-300' />
 							</Button>
@@ -139,7 +216,11 @@ const RegisterForm = () => {
 								<FormItem>
 									<FormLabel className='text-white'>Name</FormLabel>
 									<FormControl>
-										<Input placeholder={`Team member ${index + 1} name`} {...field} />
+										<Input
+											placeholder={`Team member ${index + 1} name`}
+											{...field}
+											disabled={form.formState.isSubmitting}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -152,7 +233,11 @@ const RegisterForm = () => {
 								<FormItem>
 									<FormLabel className='text-white'>E-mail</FormLabel>
 									<FormControl>
-										<Input placeholder={`member${index + 1}@gmail.com`} {...field} />
+										<Input
+											placeholder={`member${index + 1}@gmail.com`}
+											{...field}
+											disabled={form.formState.isSubmitting}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -165,7 +250,11 @@ const RegisterForm = () => {
 								<FormItem>
 									<FormLabel className='text-white'>Phone</FormLabel>
 									<FormControl>
-										<Input placeholder={`Team member ${index + 1} Phone`} {...field} />
+										<Input
+											placeholder={`Team member ${index + 1} Phone`}
+											{...field}
+											disabled={form.formState.isSubmitting}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -178,13 +267,23 @@ const RegisterForm = () => {
 					className='w-full bg-[#0A0A0A] text-white hover:bg-[#0A0A0A] hover:text-white'
 					type='button'
 					onClick={onAddMember}
+					disabled={form.formState.isSubmitting}
 				>
 					Add Team Member
 				</Button>
 
 				<div className='flex justify-center py-12'>
-					<Button variant='secondary' type='submit'>
-						Submit
+					<Button
+						variant='secondary'
+						type='submit'
+						className='w-full max-w-[6rem]'
+						disabled={form.formState.isSubmitting}
+					>
+						{form.formState.isSubmitting ? (
+							<AiOutlineLoading className='animate-spin text-xl' />
+						) : (
+							'Submit'
+						)}
 					</Button>
 				</div>
 			</form>

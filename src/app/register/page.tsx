@@ -4,7 +4,7 @@ import { Hero } from '~/components/register';
 
 const Register = () => {
 	return (
-		<div className=' '>
+		<div className=''>
 			<Hero />
 			<div className='mx-auto my-12 max-w-lg px-4'>
 				<RegisterForm />

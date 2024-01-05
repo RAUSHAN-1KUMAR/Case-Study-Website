@@ -41,8 +41,8 @@ export const TeamSchema = z.object({
 	teamLeader: TeamLeaderSchema,
 	teamMembers: z
 		.array(TeamMemberSchema)
-		.refine((data) => data.length >= 1 && data.length <= 4, {
+		.refine((data) => data.length >= 2 && data.length <= 4, {
 			message:
-				'A team must have between 2 and 5 members, including the team leader.',
+				'A team must have between 3 and 5 members, including the team leader.',
 		}),
 });
