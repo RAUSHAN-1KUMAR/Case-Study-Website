@@ -4,7 +4,12 @@ import type { Team } from '~/components/form';
 export async function POST(req: Request) {
 	try {
 		const body = (await req.json()) as Team;
-		console.log(body);
+		if (process.env.REGISTRATIONS_STARTED === 'false') {
+			console.log(process.env.REGISTRATIONS_STARTED);
+			return Response.json({
+				error: 'Registrations are closed',
+			});
+		}
 		const leader = body.teamLeader;
 		const teamExists = await db.team.findFirst({
 			where: {

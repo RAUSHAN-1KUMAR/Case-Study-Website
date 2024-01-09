@@ -91,7 +91,7 @@ export const BackgroundBeams = ({ className }: { className?: string }) => {
 					strokeWidth='0.5'
 				></path>
 
-				{paths.map((path, index) => (
+				{/* {paths.map((path, index) => (
 					<motion.path
 						key={index}
 						d={path}
@@ -99,7 +99,7 @@ export const BackgroundBeams = ({ className }: { className?: string }) => {
 						strokeOpacity='0.4'
 						strokeWidth='0.5'
 					></motion.path>
-				))}
+				))} */}
 				<defs>
 					{paths.map((path, index) => (
 						<motion.linearGradient
