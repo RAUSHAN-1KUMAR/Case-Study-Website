@@ -12,9 +12,10 @@ const Hero = () => {
 					<h1 className='text-4xl md:text-7xl'> by Entrepreneurship Cell</h1>
 				</div>
 				<p className='mx-auto mt-4 max-w-3xl py-4 text-center text-base font-normal text-neutral-300'>
-					Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
-					ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis
-					parturient montes, nascetur ridiculus mus.
+					<span className='font-bold'>Crack the ERP code at InsightX!.</span> Dive
+					deep into real business scenarios at InsightX, our case study competition.
+					Analyze data, strategize solutions, and showcase your ERP expertise. Ready
+					to unlock your potential? Register now!
 				</p>
 			</div>
 			<div className='absolute bottom-20 z-10 cursor-pointer'>
